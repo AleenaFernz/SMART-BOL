@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "forge-std/Test.sol";
-import "../src/SmartBOL.sol";
+import {Test} from "forge-std/Test.sol";
+import {SmartBOL} from "../src/SmartBOL.sol";
 
 contract SmartBOLTest is Test {
 
