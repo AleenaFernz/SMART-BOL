@@ -24,4 +24,28 @@ contract SmartBOL is ERC721 {
 
         documentToToken[documentHash] = newTokenId;
     }
+
+       function totalMinted() public view returns (uint256) {
+        return _nextTokenId;
+    }
+
+    function tokensOfOwner(address owner) public view returns (uint256[] memory) {
+
+        uint256 total = _nextTokenId;
+        uint256 count = balanceOf(owner);
+
+        uint256[] memory result = new uint256[](count);
+
+        uint256 index = 0;
+
+        for (uint256 i = 1; i <= total; i++) {
+            if (ownerOf(i) == owner) {
+                result[index] = i;
+                index++;
+            }
+        }
+
+        return result;
+    }
+
 }
