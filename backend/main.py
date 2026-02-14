@@ -4,7 +4,7 @@ from ai.ocr import extract_text_from_image
 from ai.parser import parse_bol_fields
 from ai.fraud_engine import calculate_fraud_score
 from utils.hash_registry import is_duplicate, register_hash
-
+from blockchain.client import anchor_bol_hash
 
 
 
@@ -65,7 +65,8 @@ async def verify_bol(file: UploadFile = File(...)):
             "parsed_fields": None,
             "fraud_score": 100,
             "flags": ["Duplicate document detected"],
-            "mint_allowed": False
+            "mint_allowed": False,
+            "blockchain_tx": None
         }
 
     # Continue AI verification
@@ -73,15 +74,22 @@ async def verify_bol(file: UploadFile = File(...)):
     parsed = parse_bol_fields(text)
     fraud_result = calculate_fraud_score(parsed)
 
-    # If safe → register hash
+    blockchain_tx = None
+
+    # If safe → register hash + anchor on blockchain
     if fraud_result["mint_allowed"]:
         register_hash(document_hash)
+
+        # 🔗 Blockchain anchoring (NEW)
+        blockchain_tx = anchor_bol_hash(document_hash)
 
     return {
         "document_hash": document_hash,
         "parsed_fields": parsed,
         "fraud_score": fraud_result["fraud_score"],
         "flags": fraud_result["flags"],
-        "mint_allowed": fraud_result["mint_allowed"]
+        "mint_allowed": fraud_result["mint_allowed"],
+        "blockchain_tx": blockchain_tx
     }
+
 
