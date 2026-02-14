@@ -1,235 +1,305 @@
-SMART-BOL+
+🚢 SMART-BOL+
 AI-Verified, Blockchain-Enforced Bill of Lading System
-📌 Problem
+📌 Project Description
 
-In international trade, Bills of Lading (BoL) are:
+SMART-BOL+ is an AI-powered and blockchain-enforced system that prevents duplicate ownership and fraud in digital Bills of Lading (BoL).
 
-Often paper-based or PDF documents
+Traditional logistics systems rely on centralized databases vulnerable to tampering, duplication, and double-financing risks.
 
-Legally powerful documents of title
+SMART-BOL+ introduces a three-layer trust architecture:
 
-Used as collateral in trade finance
+🧠 AI validates document integrity
 
-Relied upon by ports, banks, insurers
+🛡 Backend enforces policy decisions
 
-Fraud occurs when:
+⛓ Blockchain guarantees immutable ownership
 
-Duplicate BoLs are issued
+This ensures:
 
-Forged BoLs secure multiple financings
+One document = One owner
 
-Ownership disputes arise at ports
+No duplicate minting
 
-Multiple parties claim the same cargo
+No denial of AI-verified results
 
-Banks and institutions have lost billions due to duplicate or fraudulent Bills of Lading.
+Immutable audit trail
 
-There is no globally trusted, singular digital ownership registry.
+🏗 System Architecture
+User
+  ↓
+Frontend (React + Ethers.js)
+  ↓
+Backend (FastAPI + AI + Hashing)
+  ↓
+Policy Gate (Fraud Threshold Check)
+  ↓
+Smart Contract (ERC-721)
+  ↓
+Anvil (Local Ethereum Node)
 
-💡 Core Solution
+🧠 Module Breakdown
+🔹 1️⃣ AI + Backend Module (Aleena)
 
-SMART-BOL+ separates verification from enforcement.
+Responsible for:
 
-AI verifies authenticity and structural consistency of a BoL
+✔ OCR & structured document parsing
+✔ Fraud scoring logic
+✔ SHA-256 document hashing
+✔ Backend policy enforcement
+✔ Blockchain contract integration via Web3.py
+✔ Duplicate detection via on-chain lookup
 
-Only verified documents are allowed to proceed
+Core Flow
 
-Blockchain mints a Digital Bill of Lading NFT
+User uploads BoL
 
-NFT represents digital ownership of cargo
+Backend extracts structured data
 
-Ownership transfer occurs only via smart contract
+Fraud score generated
 
-Immutable ledger prevents duplicate ownership
+If fraud score < threshold → mint allowed
 
-🔐 Core Principle
+Hash stored on blockchain
 
-AI protects the blockchain from lies.
-Blockchain protects AI decisions from denial.
+Transaction hash returned
 
-🏗 High-Level Architecture
+Backend Tech Stack
 
-User → Backend → AI Verification → Mint Gate → Smart Contract → Blockchain
+Python
 
-Source of Truth:
+FastAPI
 
-Ownership → Blockchain
-
-Verification → AI risk scoring logic
-
-⚙️ Tech Stack
-Backend
-
-FastAPI (Python)
+Web3.py
 
 SHA-256 hashing
 
-In-memory duplicate detection (demo scope)
+Hardhat / Anvil
 
-AI Layer
+Solidity integration
 
-Tesseract OCR
-
-Format-based structured parsing
-
-Weighted fraud scoring engine
-
-Blockchain
-
-Solidity
-
-ERC-721 NFT
-
-Hardhat
-
-Polygon / Ethereum testnet
-
-Frontend
-
-React
-
-MetaMask integration
-
-🧠 AI Verification Pipeline
-
-SMART-BOL+ performs layered verification before minting.
-
-Step-by-Step Flow
-
-User uploads Bill of Lading
-
-Backend generates SHA-256 document hash
-
-Duplicate hash detection (AI layer)
-
-OCR extracts raw document text
-
-Structured fields are parsed using format-based detection
-
-Weighted fraud scoring evaluates anomalies
-
-Minting allowed only if fraud_score < threshold
-
-📊 Fraud Scoring Logic
-
-Fraud detection is weighted and configurable.
-
-Examples of checks:
-
-Missing Bill of Lading number
-
-Missing container ID
-
-Missing or invalid shipment date
-
-Future shipment date
-
-Unrealistic cargo weight
-
-Missing port information
-
-Suspicious vessel name
-
-Duplicate document hash
-
-Fraud score threshold determines mint eligibility.
-
-Duplicate documents are blocked before blockchain interaction.
-
-🔁 Duplicate Protection
-
-SMART-BOL+ prevents duplicate ownership at two layers:
-
-AI Layer – Duplicate SHA-256 hash detection
-
-Blockchain Layer – Smart contract prevents duplicate documentHash minting
-
-This ensures layered defense against duplicate issuance.
-
-📦 API Response Example
-{
-  "document_hash": "4ae495558934b6f42f2e16fa27db6e2ea2417eba2937839ec9cea39d9eeadcd8",
-  "parsed_fields": {
-    "bill_of_lading_no": "ZIMUCOK6014947",
-    "container_id": null,
-    "shipped_on_date": "18/09/2017",
-    "cargo_weight": "34,710.00",
-    "vessel": "VOV",
-    "port_of_loading": "...",
-    "port_of_destination": "..."
-  },
-  "fraud_score": 20,
-  "flags": ["Missing container ID"],
-  "mint_allowed": true
-}
-
-📌 Current Status
-
-✔ Backend architecture complete
-✔ SHA-256 hashing implemented
-✔ OCR extraction integrated
-✔ Structured field parsing operational
-✔ Weighted fraud scoring engine active
-✔ Duplicate document hash protection enabled
-✔ Mint gating logic implemented
-
-Next Phase: Smart contract integration and NFT mint enforcement.
-
-🚀 Hackathon Scope
-
-This system:
-
-Does NOT:
-
-Replace shipping companies
-
-Guarantee physical cargo existence
-
-Eliminate all fraud
-
-It DOES:
-
-Prevent duplicate digital ownership
-
-Reduce probability of forged documents
-
-Enforce single on-chain ownership
-
-Create immutable audit trail
-
-Introduce AI-based pre-mint verification
-
-📁 Project Structure
+Backend Folder Structure
 backend/
-│
-├── main.py
-├── requirements.txt
 │
 ├── ai/
 │   ├── ocr.py
 │   ├── parser.py
-│   └── fraud_engine.py
+│   ├── fraud_engine.py
+│
+├── blockchain/
+│   ├── client.py
+│   ├── abi/
 │
 ├── utils/
 │   ├── hash_utils.py
-│   └── hash_registry.py
+│
+├── main.py
+└── requirements.txt
 
-🧭 Future Improvements
+🔹 2️⃣ Blockchain Module (Merin)
 
-Carrier-specific parsing models
+Smart Contract enforcing deterministic ownership.
 
-Named Entity Recognition for ports
+What It Does
 
-Database-backed duplicate detection
+✔ Mints ERC-721 NFT for verified BoL
+✔ Prevents duplicate document hash minting
+✔ Maintains documentHash → tokenId mapping
+✔ Creates immutable audit record
 
-Multi-node distributed hash registry
+Smart Contract Features
+function mint(address to, bytes32 documentHash) external;
 
-Trade finance integration
 
-On-chain verification metadata anchoring
+Prevents duplicates:
 
-🏁 Vision
+mapping(bytes32 => uint256) public documentHashToTokenId;
 
-SMART-BOL+ aims to introduce probabilistic AI verification before deterministic blockchain enforcement.
 
-A layered trust architecture for international trade documentation.
+One document hash = One NFT.
+
+Blockchain Tech Stack
+
+Solidity
+
+Foundry (Forge)
+
+Anvil (Local Ethereum)
+
+OpenZeppelin ERC-721
+
+🔹 3️⃣ Frontend Module (Merin)
+
+React-based UI for interacting with smart contract.
+
+Features
+
+✔ Connect MetaMask
+✔ Mint BoL NFT
+✔ Prevent duplicate mint attempts
+✔ View owned NFTs
+✔ Display transaction status
+
+Frontend Tech Stack
+
+React (Vite + TypeScript)
+
+Ethers.js v6
+
+MetaMask
+
+Foundry deployment
+
+⚙️ Installation & Setup
+🧠 Backend Setup (AI + Integration)
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+
+Run backend:
+
+uvicorn main:app --reload
+
+
+Open API docs:
+
+http://127.0.0.1:8000/docs
+
+⛓ Blockchain Setup (Foundry + Anvil)
+1️⃣ Install Foundry
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+
+2️⃣ Start Local Chain
+anvil
+
+
+Runs at:
+
+http://127.0.0.1:8545
+
+3️⃣ Build Contract
+forge build
+
+4️⃣ Deploy
+forge script script/Deploy.s.sol \
+--rpc-url http://127.0.0.1:8545 \
+--private-key <ANVIL_PRIVATE_KEY> \
+--broadcast
+
+
+Update frontend with:
+
+CONTRACT_ADDRESS
+
+CONTRACT_ABI
+
+💻 Frontend Setup
+cd frontend
+npm install
+npm run dev
+
+
+Runs at:
+
+http://localhost:5173
+
+📖 API Documentation
+
+FastAPI auto-generated docs:
+
+http://127.0.0.1:8000/docs
+
+Main Endpoint
+
+POST /verify-bol
+
+Accepts:
+
+Multipart file upload
+
+Returns:
+
+Parsed data
+
+Fraud score
+
+SHA-256 hash
+
+Blockchain transaction hash
+
+Block number
+
+Status
+
+🛡 Security Design
+
+Trust Boundaries:
+
+User → Untrusted
+AI → Probabilistic
+Backend → Policy Enforcement
+Blockchain → Deterministic & Immutable
+
+📸 Screenshots
+
+(Add images inside /screenshots folder)
+
+1️⃣ Swagger API Interface
+![alt text](image.png)
+
+2️⃣ Verification Response
+![alt text](image-5.png)
+
+![alt text](image-1.png)
+
+![alt text](image-2.png)
+
+![alt text](image-3.png)
+
+![alt text](image-4.png)
+
+3️⃣ NFT Mint Transaction
+
+![alt text](image-6.png)
+
+![alt text](image-7.png)
+
+![alt text](image-8.png)
+
+![alt text](image-9.png)
+
+![alt text](image-10.png)
+
+![alt text](image-11.png)
+
+🎬 Demo Videos
+
+📦 Required Root Files
+
+✔ README.md
+✔ .gitignore
+✔ backend/requirements.txt
+✔ frontend/package.json
+
+
+👥 Team Members
+
+Aleena – AI Engine, Backend Architecture, Blockchain Integration
+
+Merin – Smart Contract Development, Frontend Implementation
+
+🔮 Future Improvements
+
+Public testnet deployment (Sepolia / Polygon)
+
+IPFS metadata storage
+
+Bank verification dashboard
+
+Trade finance automation
+
+Role-based mint permissions
+
+Advanced ML fraud detection
